@@ -1,36 +1,36 @@
-merlinsGroupDPS = {}
+MerlinsRaidHelper = {}
 
-merlinsGroupDPS.name = "MerlinsGroupDPS"
-merlinsGroupDPS.version = "1.0.2"
-merlinsGroupDPS.inCombat = false
+MerlinsRaidHelper.name = "MerlinsRaidHelper"
+MerlinsRaidHelper.version = "1.0.2"
+MerlinsRaidHelper.inCombat = false
 
-merlinsGroupDPS.timestart = 0
-merlinsGroupDPS.timeend = 0
+MerlinsRaidHelper.timestart = 0
+MerlinsRaidHelper.timeend = 0
 
-merlinsGroupDPS.dd = 0
-merlinsGroupDPS.dps = 0
-merlinsGroupDPS.rez = 0
-merlinsGroupDPS.dead = 0
+MerlinsRaidHelper.dd = 0
+MerlinsRaidHelper.dps = 0
+MerlinsRaidHelper.rez = 0
+MerlinsRaidHelper.dead = 0
 
-merlinsGroupDPS.groupDPSdatas = {}
-merlinsGroupDPS.lastGroupDatas = 0
-merlinsGroupDPS.tableBG = {}
-merlinsGroupDPS.field = {}
+MerlinsRaidHelper.groupDPSdatas = {}
+MerlinsRaidHelper.lastGroupDatas = 0
+MerlinsRaidHelper.tableBG = {}
+MerlinsRaidHelper.field = {}
 
-merlinsGroupDPS.wm = nil
-merlinsGroupDPS.tlw = nil
-merlinsGroupDPS.tableBG = nil
+MerlinsRaidHelper.wm = nil
+MerlinsRaidHelper.tlw = nil
+MerlinsRaidHelper.tableBG = nil
 
 -- timer
-merlinsGroupDPS.tltw = nil
-merlinsGroupDPS.timerlabel = nil
-merlinsGroupDPS.timertime = 0
+MerlinsRaidHelper.tltw = nil
+MerlinsRaidHelper.timerlabel = nil
+MerlinsRaidHelper.timertime = 0
 
 
 -- Initialize addon
-function merlinsGroupDPS.OnAddOnLoaded(eventCode, addOnName)
-	if (addOnName == merlinsGroupDPS.name) then
-		merlinsGroupDPS:Initialize()
+function MerlinsRaidHelper.OnAddOnLoaded(eventCode, addOnName)
+	if (addOnName == MerlinsRaidHelper.name) then
+		MerlinsRaidHelper:Initialize()
 	end
 end
 
@@ -40,10 +40,10 @@ local function OnPluginLoaded(event, addon)
 end
 
 
-function merlinsGroupDPS:Initialize()
+function MerlinsRaidHelper:Initialize()
 	self.inCombat = IsUnitInCombat("player")
 
-	merlinsGroupDPS:SetupInterface()
+	MerlinsRaidHelper:SetupInterface()
 
 	EVENT_MANAGER:RegisterForEvent(self.name, EVENT_CHAT_MESSAGE_CHANNEL, self.ChatCallback)
 	EVENT_MANAGER:RegisterForEvent(self.name, EVENT_PLAYER_DEAD, self.GetsKilled)
@@ -56,7 +56,7 @@ function merlinsGroupDPS:Initialize()
 end
 
 
-function merlinsGroupDPS.OnCombatEvent(eventCode , result , isError , abilityName , abilityGraphic , abilityActionSlotType , sourceName , sourceType , targetName , targetType , hitValue , powerType , damageType , log , sourceUnitId , targetUnitId , abilityId)
+function MerlinsRaidHelper.OnCombatEvent(eventCode , result , isError , abilityName , abilityGraphic , abilityActionSlotType , sourceName , sourceType , targetName , targetType , hitValue , powerType , damageType , log , sourceUnitId , targetUnitId , abilityId)
 	-- Ignore errors
   if ( isError ) then return end
   -- result , abilityName , abilityGraphic , abilityActionSlotType , sourceName , sourceType , targetName , targetType , hitValue , powerType , damageType
@@ -85,16 +85,16 @@ function merlinsGroupDPS.OnCombatEvent(eventCode , result , isError , abilityNam
 	            if ( damageOut ) then
 
 							  -- backup for pre damageOut
-								if (merlinsGroupDPS.inCombat==false) then
-									merlinsGroupDPS.inCombat = true
-									merlinsGroupDPS.timestart = GetGameTimeMilliseconds()
-									merlinsGroupDPS.dd = 0
+								if (MerlinsRaidHelper.inCombat==false) then
+									MerlinsRaidHelper.inCombat = true
+									MerlinsRaidHelper.timestart = GetGameTimeMilliseconds()
+									MerlinsRaidHelper.dd = 0
 									 -- d("passed")
 								end
 
 								-- d(hitValue .. player .. " ... " .. target)
-								merlinsGroupDPS.timeend = GetGameTimeMilliseconds()
-								merlinsGroupDPS.dd = merlinsGroupDPS.dd + hitValue
+								MerlinsRaidHelper.timeend = GetGameTimeMilliseconds()
+								MerlinsRaidHelper.dd = MerlinsRaidHelper.dd + hitValue
 								-- d(hitValue)
 							end
 
@@ -111,28 +111,28 @@ function merlinsGroupDPS.OnCombatEvent(eventCode , result , isError , abilityNam
 end
 
 
-function merlinsGroupDPS.OnPlayerCombatState(event, inCombat)
+function MerlinsRaidHelper.OnPlayerCombatState(event, inCombat)
 	-- The ~= operator is "not equal to" in Lua.
 
-	if inCombat ~= merlinsGroupDPS.inCombat then
-		-- merlinsGroupDPS.inCombat = inCombat
+	if inCombat ~= MerlinsRaidHelper.inCombat then
+		-- MerlinsRaidHelper.inCombat = inCombat
 		if inCombat then
 			-- entering combat
 			-- d("Start combat")
-			--merlinsGroupDPS.timestart = GetTimeStamp()
-			--merlinsGroupDPS.dd = 0
+			--MerlinsRaidHelper.timestart = GetTimeStamp()
+			--MerlinsRaidHelper.dd = 0
 
 		else
 			-- exiting combat
 		  -- d("Left combat")
-			merlinsGroupDPS.inCombat = inCombat
-			merlinsGroupDPS:SendPing()
+			MerlinsRaidHelper.inCombat = inCombat
+			MerlinsRaidHelper:SendPing()
 		end
 	end
 end
 
 
-function merlinsGroupDPS.OnPing( eventCode, pingEventType, pingType, pingTag, offsetX, offsetY , isOwner )
+function MerlinsRaidHelper.OnPing( eventCode, pingEventType, pingType, pingTag, offsetX, offsetY , isOwner )
 
   -- d("get ping"..GetUnitName( pingTag ))
 	if ( pingType == MAP_PIN_TYPE_PING ) then
@@ -151,10 +151,10 @@ function merlinsGroupDPS.OnPing( eventCode, pingEventType, pingType, pingTag, of
 
 
 		local now = GetGameTimeMilliseconds()
-		if ((merlinsGroupDPS.lastGroupDatas == 0) or ((merlinsGroupDPS.lastGroupDatas-now)/1000 > 5)) then
+		if ((MerlinsRaidHelper.lastGroupDatas == 0) or ((MerlinsRaidHelper.lastGroupDatas-now)/1000 > 5)) then
 			-- new table
-			merlinsGroupDPS.lastGroupDatas = now
-			merlinsGroupDPS.groupDPSdatas = {}
+			MerlinsRaidHelper.lastGroupDatas = now
+			MerlinsRaidHelper.groupDPSdatas = {}
 		end
 
 		-- add data
@@ -164,39 +164,39 @@ function merlinsGroupDPS.OnPing( eventCode, pingEventType, pingType, pingTag, of
 			["dps"]		= dps,
 			["time"]	= time,
 		}
-		merlinsGroupDPS.groupDPSdatas[name] = data
+		MerlinsRaidHelper.groupDPSdatas[name] = data
 
 		-- d("Data added ..."..name)
 
 		-- reload table
-		merlinsGroupDPS:UIReloadTable()
+		MerlinsRaidHelper:UIReloadTable()
 
 	end
 
 end
 
 
-merlinsGroupDPS.GetsKilled = function(_)
+MerlinsRaidHelper.GetsKilled = function(_)
 	-- d("GetsKilled")
-	merlinsGroupDPS.dead = merlinsGroupDPS.dead + 1
+	MerlinsRaidHelper.dead = MerlinsRaidHelper.dead + 1
 end
 
-merlinsGroupDPS.StartRez = function(_, durationMs)
+MerlinsRaidHelper.StartRez = function(_, durationMs)
 	-- d("StartRez")
-	merlinsGroupDPS.rez = merlinsGroupDPS.rez + 1
+	MerlinsRaidHelper.rez = MerlinsRaidHelper.rez + 1
 end
 
 -- callback fired on chat message
-merlinsGroupDPS.ChatCallback = function(_, messageType, from, message)
+MerlinsRaidHelper.ChatCallback = function(_, messageType, from, message)
 
 		if from ~= nil and from ~= "" then
 
     if string.lower(message) == "showdps" then
-			merlinsGroupDPS:SendToChat()
+			MerlinsRaidHelper:SendToChat()
     end
 
 		if string.lower(message) == "showinit" then
-			merlinsGroupDPS:SendInitToChat()
+			MerlinsRaidHelper:SendInitToChat()
     end
 
 		if string.match(string.lower(message), "^settimer%s%d+") then
@@ -204,7 +204,7 @@ merlinsGroupDPS.ChatCallback = function(_, messageType, from, message)
 			mins = string.match(string.lower(message), "(%d+)")
 			-- d(mins)
 			local secounds = mins * 60
-			merlinsGroupDPS.timertime = secounds + (GetGameTimeMilliseconds() / 1000)
+			MerlinsRaidHelper.timertime = secounds + (GetGameTimeMilliseconds() / 1000)
     end
 
 
@@ -213,25 +213,25 @@ merlinsGroupDPS.ChatCallback = function(_, messageType, from, message)
 
 end
 
-function merlinsGroupDPS:GetSec()
-	local sec = (merlinsGroupDPS.timeend-merlinsGroupDPS.timestart)/1000
+function MerlinsRaidHelper:GetSec()
+	local sec = (MerlinsRaidHelper.timeend-MerlinsRaidHelper.timestart)/1000
 	if not (sec>1) then sec = 1 end
 	return sec
 end
 
-function merlinsGroupDPS:GetDps(sec)
+function MerlinsRaidHelper:GetDps(sec)
 	if not (sec) then sec = 1 end
-	return math.floor(merlinsGroupDPS.dd / sec)
+	return math.floor(MerlinsRaidHelper.dd / sec)
 end
 
 
-function merlinsGroupDPS:SendToChat()
+function MerlinsRaidHelper:SendToChat()
 
 	-- prepare data and strings...
-	local sec = merlinsGroupDPS:GetSec()
-	local dps = merlinsGroupDPS:GetDps(sec) / 1000 -- get k (1000)
+	local sec = MerlinsRaidHelper:GetSec()
+	local dps = MerlinsRaidHelper:GetDps(sec) / 1000 -- get k (1000)
 
-	d(math.floor(merlinsGroupDPS.dd) .. "k in " .. sec .."s is a dps of "..dps .."k.")
+	d(math.floor(MerlinsRaidHelper.dd) .. "k in " .. sec .."s is a dps of "..dps .."k.")
 
 	if not (dps>0) then dps = 0 end
 
@@ -249,35 +249,35 @@ function merlinsGroupDPS:SendToChat()
 	end
 
 	local deadtext = "";
-	if (merlinsGroupDPS.dead == 0) then
+	if (MerlinsRaidHelper.dead == 0) then
 		deadtext = "I'm immortal!"
-	elseif (merlinsGroupDPS.dead == 1) then
+	elseif (MerlinsRaidHelper.dead == 1) then
 		deadtext = "I died once."
-	elseif (merlinsGroupDPS.dead < 5) then
+	elseif (MerlinsRaidHelper.dead < 5) then
 		deadtext = "I died a few times."
 	else
 		deadtext = "I died too often. I should train my movement."
 	end
 
 	CHAT_SYSTEM:SetChannel(3)
-	CHAT_SYSTEM:StartTextEntry(dpstext.." "..deadtext.." Rez attempts: "..merlinsGroupDPS.rez)
+	CHAT_SYSTEM:StartTextEntry(dpstext.." "..deadtext.." Rez attempts: "..MerlinsRaidHelper.rez)
 
 	-- reset
-	merlinsGroupDPS.rez = 0
-	merlinsGroupDPS.dead = 0
+	MerlinsRaidHelper.rez = 0
+	MerlinsRaidHelper.dead = 0
 end
 
-function merlinsGroupDPS:SendInitToChat()
+function MerlinsRaidHelper:SendInitToChat()
 
 	CHAT_SYSTEM:SetChannel(3)
-	CHAT_SYSTEM:StartTextEntry("◯ M's Group DPS (V"..merlinsGroupDPS.version..") is ready to use! ◯")
+	CHAT_SYSTEM:StartTextEntry("◯ M's Group DPS (V"..MerlinsRaidHelper.version..") is ready to use! ◯")
 
 end
 
-function merlinsGroupDPS:SendPing()
+function MerlinsRaidHelper:SendPing()
 
-	local time = merlinsGroupDPS:GetSec()
-	local dps = merlinsGroupDPS:GetDps(time) -- get k (1000)
+	local time = MerlinsRaidHelper:GetSec()
+	local dps = MerlinsRaidHelper:GetDps(time) -- get k (1000)
 
 	-- Compute map ping offsets
 	local timeCoord 	= time/10000
@@ -290,94 +290,94 @@ function merlinsGroupDPS:SendPing()
 
 end
 
-function merlinsGroupDPS:SetupInterface()
+function MerlinsRaidHelper:SetupInterface()
 
-		merlinsGroupDPS.wm = GetWindowManager()
-		merlinsGroupDPS.tlw = merlinsGroupDPS.wm:CreateTopLevelWindow("ccTLW")
+		MerlinsRaidHelper.wm = GetWindowManager()
+		MerlinsRaidHelper.tlw = MerlinsRaidHelper.wm:CreateTopLevelWindow("ccTLW")
 
-		merlinsGroupDPS.tlw:SetDimensions(408,20*12+37)
-		merlinsGroupDPS.tlw:SetResizeToFitDescendents(true)
-		merlinsGroupDPS.tlw:SetAnchor(RIGHT, GuiRoot, RIGHT, -10, -100)
+		MerlinsRaidHelper.tlw:SetDimensions(408,20*12+37)
+		MerlinsRaidHelper.tlw:SetResizeToFitDescendents(true)
+		MerlinsRaidHelper.tlw:SetAnchor(RIGHT, GuiRoot, RIGHT, -10, -100)
 
-		merlinsGroupDPS.tlw:SetMovable(true)
-		merlinsGroupDPS.tlw:SetMouseEnabled(true)
+		MerlinsRaidHelper.tlw:SetMovable(true)
+		MerlinsRaidHelper.tlw:SetMouseEnabled(true)
 		-- tlw:SetHandler("OnClicked", tlwClicked)
 
-		merlinsGroupDPS.tableBG = merlinsGroupDPS.wm:CreateControl("tableBG", merlinsGroupDPS.tlw, CT_BACKDROP)
-		merlinsGroupDPS.tableBG:SetEdgeColor(0.4,0.4,0.4, 0.1)
-		merlinsGroupDPS.tableBG:SetCenterColor(0.2,0.2,0.2,1)
-		merlinsGroupDPS.tableBG:SetAnchor(TOPLEFT, merlinsGroupDPS.tlw, TOPLEFT, 0, 0)
-		merlinsGroupDPS.tableBG:SetDimensions(408,20*12+37)
-		merlinsGroupDPS.tableBG:SetAlpha(0.8)
-		merlinsGroupDPS.tableBG:SetDrawLayer(0)
+		MerlinsRaidHelper.tableBG = MerlinsRaidHelper.wm:CreateControl("tableBG", MerlinsRaidHelper.tlw, CT_BACKDROP)
+		MerlinsRaidHelper.tableBG:SetEdgeColor(0.4,0.4,0.4, 0.1)
+		MerlinsRaidHelper.tableBG:SetCenterColor(0.2,0.2,0.2,1)
+		MerlinsRaidHelper.tableBG:SetAnchor(TOPLEFT, MerlinsRaidHelper.tlw, TOPLEFT, 0, 0)
+		MerlinsRaidHelper.tableBG:SetDimensions(408,20*12+37)
+		MerlinsRaidHelper.tableBG:SetAlpha(0.8)
+		MerlinsRaidHelper.tableBG:SetDrawLayer(0)
 		-- tableBG:SetHandler( "OnMouseUp", function( self ) FTC.Menu:SaveAnchor( self ) end )
 
 
 		for i=0,12,1 do
-	  	merlinsGroupDPS:UIRow(i, 20, 14, 9 + 20*i)
+	  	MerlinsRaidHelper:UIRow(i, 20, 14, 9 + 20*i)
 		end
-		merlinsGroupDPS.field["0Player"]:SetColor(0.8, 0.8, 0.8)
-		merlinsGroupDPS.field["0Time"]:SetColor(0.8, 0.8, 0.8)
-		merlinsGroupDPS.field["0Damage"]:SetColor(0.8, 0.8, 0.8)
-		merlinsGroupDPS.field["0DPS"]:SetColor(0.8, 0.8, 0.8)
+		MerlinsRaidHelper.field["0Player"]:SetColor(0.8, 0.8, 0.8)
+		MerlinsRaidHelper.field["0Time"]:SetColor(0.8, 0.8, 0.8)
+		MerlinsRaidHelper.field["0Damage"]:SetColor(0.8, 0.8, 0.8)
+		MerlinsRaidHelper.field["0DPS"]:SetColor(0.8, 0.8, 0.8)
 
-		merlinsGroupDPS.tlw:SetHidden(true)
+		MerlinsRaidHelper.tlw:SetHidden(true)
 
 		-- set up timer
-		merlinsGroupDPS.tltw = merlinsGroupDPS.wm:CreateTopLevelWindow("ccTLTW")
+		MerlinsRaidHelper.tltw = MerlinsRaidHelper.wm:CreateTopLevelWindow("ccTLTW")
 
-		merlinsGroupDPS.tltw:SetDimensions(200,100)
-		merlinsGroupDPS.tltw:SetAnchor(CENTER, GuiRoot, CENTER, 0, 0)
+		MerlinsRaidHelper.tltw:SetDimensions(200,100)
+		MerlinsRaidHelper.tltw:SetAnchor(CENTER, GuiRoot, CENTER, 0, 0)
 
-		merlinsGroupDPS.timerBG = merlinsGroupDPS.wm:CreateControl("timerBackDrop", merlinsGroupDPS.tltw, CT_BACKDROP)
-		merlinsGroupDPS.timerBG:SetAnchor(CENTER, merlinsGroupDPS.tltw, CENTER, 0, 0)
-		merlinsGroupDPS.timerBG:SetDimensions(200,100)
-		merlinsGroupDPS.timerBG:SetEdgeColor(0.1,0.1,0.1, 0.8)
-		merlinsGroupDPS.timerBG:SetCenterColor(0.1,0.1,0.1, 0.8)
+		MerlinsRaidHelper.timerBG = MerlinsRaidHelper.wm:CreateControl("timerBackDrop", MerlinsRaidHelper.tltw, CT_BACKDROP)
+		MerlinsRaidHelper.timerBG:SetAnchor(CENTER, MerlinsRaidHelper.tltw, CENTER, 0, 0)
+		MerlinsRaidHelper.timerBG:SetDimensions(200,100)
+		MerlinsRaidHelper.timerBG:SetEdgeColor(0.1,0.1,0.1, 0.8)
+		MerlinsRaidHelper.timerBG:SetCenterColor(0.1,0.1,0.1, 0.8)
 
-		merlinsGroupDPS.timerlabel = merlinsGroupDPS.wm:CreateControl("timerlabel", merlinsGroupDPS.tltw, CT_LABEL)
-		merlinsGroupDPS.timerlabel:SetColor(0.8, 0.8, 0.8, 0.7)
-		merlinsGroupDPS.timerlabel:SetFont("ZoFontWinH1")
-		merlinsGroupDPS.timerlabel:SetScale(1)
-		merlinsGroupDPS.timerlabel:SetWrapMode(TEX_MODE_CLAMP)
-		merlinsGroupDPS.timerlabel:SetDrawLayer(1)
-		merlinsGroupDPS.timerlabel:SetText("00:00")
-		merlinsGroupDPS.timerlabel:SetHorizontalAlignment(TEXT_ALIGN_CENTER)
-		merlinsGroupDPS.timerlabel:SetVerticalAlignment(TEXT_ALIGN_CENTER)
-		merlinsGroupDPS.timerlabel:SetAnchor(CENTER, merlinsGroupDPS.tltw, CENTER, 0, 0)
-		merlinsGroupDPS.timerlabel:SetDimensions(200,100)
+		MerlinsRaidHelper.timerlabel = MerlinsRaidHelper.wm:CreateControl("timerlabel", MerlinsRaidHelper.tltw, CT_LABEL)
+		MerlinsRaidHelper.timerlabel:SetColor(0.8, 0.8, 0.8, 0.7)
+		MerlinsRaidHelper.timerlabel:SetFont("ZoFontWinH1")
+		MerlinsRaidHelper.timerlabel:SetScale(1)
+		MerlinsRaidHelper.timerlabel:SetWrapMode(TEX_MODE_CLAMP)
+		MerlinsRaidHelper.timerlabel:SetDrawLayer(1)
+		MerlinsRaidHelper.timerlabel:SetText("00:00")
+		MerlinsRaidHelper.timerlabel:SetHorizontalAlignment(TEXT_ALIGN_CENTER)
+		MerlinsRaidHelper.timerlabel:SetVerticalAlignment(TEXT_ALIGN_CENTER)
+		MerlinsRaidHelper.timerlabel:SetAnchor(CENTER, MerlinsRaidHelper.tltw, CENTER, 0, 0)
+		MerlinsRaidHelper.timerlabel:SetDimensions(200,100)
 
-		merlinsGroupDPS.tltw:SetHidden(true)
+		MerlinsRaidHelper.tltw:SetHidden(true)
 
 
 end
 
-function merlinsGroupDPS:UpdateTimer()
-	if (merlinsGroupDPS.timertime == 0) then return end
+function MerlinsRaidHelper:UpdateTimer()
+	if (MerlinsRaidHelper.timertime == 0) then return end
 
-	--d("Timer update"..merlinsGroupDPS.timertime)
+	--d("Timer update"..MerlinsRaidHelper.timertime)
 
-	local secounds = merlinsGroupDPS.timertime -  (GetGameTimeMilliseconds() / 1000)
-	merlinsGroupDPS.timerlabel:SetText(merlinsGroupDPS:GetTimeShort(secounds))
+	local secounds = MerlinsRaidHelper.timertime -  (GetGameTimeMilliseconds() / 1000)
+	MerlinsRaidHelper.timerlabel:SetText(MerlinsRaidHelper:GetTimeShort(secounds))
 
 	if (secounds > (2 * 60)) then
-		merlinsGroupDPS.timerBG:SetCenterColor(0.12, 0.76, 0.12, 0.6)
+		MerlinsRaidHelper.timerBG:SetCenterColor(0.12, 0.76, 0.12, 0.6)
 	elseif (secounds > 60) then
-		merlinsGroupDPS.timerBG:SetCenterColor(0.76, 0.76, 0.12, 0.6)
+		MerlinsRaidHelper.timerBG:SetCenterColor(0.76, 0.76, 0.12, 0.6)
 	else
-		merlinsGroupDPS.timerBG:SetCenterColor(0.76, 0.12, 0.12, 0.6)
+		MerlinsRaidHelper.timerBG:SetCenterColor(0.76, 0.12, 0.12, 0.6)
 	end
 
-	merlinsGroupDPS.tltw:SetHidden(false)
+	MerlinsRaidHelper.tltw:SetHidden(false)
 
 	if (secounds < 1) then
-		merlinsGroupDPS.timertime = 0
-		merlinsGroupDPS.tltw:SetHidden(true)
+		MerlinsRaidHelper.timertime = 0
+		MerlinsRaidHelper.tltw:SetHidden(true)
 	end
 
 end
 
-function merlinsGroupDPS:GetTimeShort(s)
+function MerlinsRaidHelper:GetTimeShort(s)
 	--return string.format("%.2d:%.2d:%.2d", s/(60*60), s/60%60, s%60)
 
 	local val = ""
@@ -398,39 +398,39 @@ function merlinsGroupDPS:GetTimeShort(s)
 end
 
 
-function merlinsGroupDPS:UIRow(id, height, left, top)
+function MerlinsRaidHelper:UIRow(id, height, left, top)
 
 		local tableBG = {}
-		merlinsGroupDPS.tableBG[id] = merlinsGroupDPS.wm:CreateControl("rowBackDrop"..id, merlinsGroupDPS.tlw, CT_BACKDROP)
-		merlinsGroupDPS.tableBG[id]:SetAnchor(TOPLEFT, merlinsGroupDPS.tlw, TOPLEFT, left-5, top)
-		merlinsGroupDPS.tableBG[id]:SetDimensions(390,height)
+		MerlinsRaidHelper.tableBG[id] = MerlinsRaidHelper.wm:CreateControl("rowBackDrop"..id, MerlinsRaidHelper.tlw, CT_BACKDROP)
+		MerlinsRaidHelper.tableBG[id]:SetAnchor(TOPLEFT, MerlinsRaidHelper.tlw, TOPLEFT, left-5, top)
+		MerlinsRaidHelper.tableBG[id]:SetDimensions(390,height)
 		if (id%2 == 0) then
-			merlinsGroupDPS.tableBG[id]:SetEdgeColor(0.1,0.1,0.1)
-			merlinsGroupDPS.tableBG[id]:SetCenterColor(0.1,0.1,0.1)
+			MerlinsRaidHelper.tableBG[id]:SetEdgeColor(0.1,0.1,0.1)
+			MerlinsRaidHelper.tableBG[id]:SetCenterColor(0.1,0.1,0.1)
 		else
-			merlinsGroupDPS.tableBG[id]:SetEdgeColor(0.1,0.1,0.1,0.001)
-			merlinsGroupDPS.tableBG[id]:SetCenterColor(0.1,0.1,0.1,0.001)
+			MerlinsRaidHelper.tableBG[id]:SetEdgeColor(0.1,0.1,0.1,0.001)
+			MerlinsRaidHelper.tableBG[id]:SetCenterColor(0.1,0.1,0.1,0.001)
 		end
 
-		merlinsGroupDPS:UILabel(id, "Player", 140, height, left, top)
-		merlinsGroupDPS:UILabel(id, "Time", 75, height, left+140, top)
-		merlinsGroupDPS:UILabel(id, "Damage", 100, height, left+140+75, top)
-		merlinsGroupDPS:UILabel(id, "DPS", 75, height, left+140+75+100, top)
+		MerlinsRaidHelper:UILabel(id, "Player", 140, height, left, top)
+		MerlinsRaidHelper:UILabel(id, "Time", 75, height, left+140, top)
+		MerlinsRaidHelper:UILabel(id, "Damage", 100, height, left+140+75, top)
+		MerlinsRaidHelper:UILabel(id, "DPS", 75, height, left+140+75+100, top)
 
 end
 
-function merlinsGroupDPS:UILabel(id, text, width, height, left, top)
+function MerlinsRaidHelper:UILabel(id, text, width, height, left, top)
 
 	local tag = text
-	merlinsGroupDPS.field[id..tag] = merlinsGroupDPS.wm:CreateControl("label"..tag..id, merlinsGroupDPS.tableBG[id], CT_LABEL)
-	merlinsGroupDPS.field[id..tag]:SetColor(0.8, 0.8, 0.8, 0.7)
-	merlinsGroupDPS.field[id..tag]:SetFont("ZoFontGame")
-	merlinsGroupDPS.field[id..tag]:SetScale(1)
-	merlinsGroupDPS.field[id..tag]:SetWrapMode(TEX_MODE_CLAMP)
-	merlinsGroupDPS.field[id..tag]:SetDrawLayer(1)
-	merlinsGroupDPS.field[id..tag]:SetText(text)
-	merlinsGroupDPS.field[id..tag]:SetAnchor(TOPLEFT, merlinsGroupDPS.tlw, TOPLEFT, left, top)
-	merlinsGroupDPS.field[id..tag]:SetDimensions(width,height)
+	MerlinsRaidHelper.field[id..tag] = MerlinsRaidHelper.wm:CreateControl("label"..tag..id, MerlinsRaidHelper.tableBG[id], CT_LABEL)
+	MerlinsRaidHelper.field[id..tag]:SetColor(0.8, 0.8, 0.8, 0.7)
+	MerlinsRaidHelper.field[id..tag]:SetFont("ZoFontGame")
+	MerlinsRaidHelper.field[id..tag]:SetScale(1)
+	MerlinsRaidHelper.field[id..tag]:SetWrapMode(TEX_MODE_CLAMP)
+	MerlinsRaidHelper.field[id..tag]:SetDrawLayer(1)
+	MerlinsRaidHelper.field[id..tag]:SetText(text)
+	MerlinsRaidHelper.field[id..tag]:SetAnchor(TOPLEFT, MerlinsRaidHelper.tlw, TOPLEFT, left, top)
+	MerlinsRaidHelper.field[id..tag]:SetDimensions(width,height)
 
 end
 
@@ -438,75 +438,75 @@ local function compare(x,y)
 	return x.damage > y.damage
 end
 
-function merlinsGroupDPS:UIReloadTable()
+function MerlinsRaidHelper:UIReloadTable()
 
 		-- sort data
 		local data = {}
-		-- d(merlinsGroupDPS.groupDPSdatas)
-		for player , damage in pairs(merlinsGroupDPS.groupDPSdatas) do
+		-- d(MerlinsRaidHelper.groupDPSdatas)
+		for player , damage in pairs(MerlinsRaidHelper.groupDPSdatas) do
 			table.insert(data,damage)
 		end
 		table.sort(data, compare)
 		 --d(data)
 
 		-- visibility
-		if ( #data == 0 ) then merlinsGroupDPS.tlw:SetHidden(true) end
-		merlinsGroupDPS.tlw:SetHidden(false)
+		if ( #data == 0 ) then MerlinsRaidHelper.tlw:SetHidden(true) end
+		MerlinsRaidHelper.tlw:SetHidden(false)
 
 		-- insert rows
 		for i = 1 , #data do
-			merlinsGroupDPS.field[i.."Player"]:SetText(data[i].name)
-			merlinsGroupDPS.field[i.."Damage"]:SetText(data[i].damage)
-			merlinsGroupDPS.field[i.."DPS"]:SetText(data[i].dps)
-			merlinsGroupDPS.field[i.."Time"]:SetText(data[i].time)
-			merlinsGroupDPS.tableBG[i]:SetHidden(false)
+			MerlinsRaidHelper.field[i.."Player"]:SetText(data[i].name)
+			MerlinsRaidHelper.field[i.."Damage"]:SetText(data[i].damage)
+			MerlinsRaidHelper.field[i.."DPS"]:SetText(data[i].dps)
+			MerlinsRaidHelper.field[i.."Time"]:SetText(data[i].time)
+			MerlinsRaidHelper.tableBG[i]:SetHidden(false)
 		end
 		-- clean up table
 		for i = (#data+1) , 12 do
-			merlinsGroupDPS.tableBG[i]:SetHidden(true)
+			MerlinsRaidHelper.tableBG[i]:SetHidden(true)
 		end
 
 		-- resize
 		-- d((25*#data)-5)
-		merlinsGroupDPS.tlw:SetDimensions(408,(20*#data)+37)
-		merlinsGroupDPS.tableBG:SetDimensions(408,(20*#data)+37)
+		MerlinsRaidHelper.tlw:SetDimensions(408,(20*#data)+37)
+		MerlinsRaidHelper.tableBG:SetDimensions(408,(20*#data)+37)
 
 		-- fade out
-		--merlinsGroupDPS.tlw:SetHidden(true)
+		--MerlinsRaidHelper.tlw:SetHidden(true)
 
-		zo_callLater(merlinsGroupDPS.HideTable, 12000) --12 s
+		zo_callLater(MerlinsRaidHelper.HideTable, 12000) --12 s
 
 end
 
--- not local cuz teso callback function 
-function merlinsGroupDPS.HideTable()
-	merlinsGroupDPS.tlw:SetHidden(true)
+-- not local cuz teso callback function
+function MerlinsRaidHelper.HideTable()
+	MerlinsRaidHelper.tlw:SetHidden(true)
 end
 
 local function ResizeWind(var)
-	merlinsGroupDPS.tlw:SetDimensions(408,(20*var)+37)
-	merlinsGroupDPS.tableBG:SetDimensions(408,(20*var)+37)
+	MerlinsRaidHelper.tlw:SetDimensions(408,(20*var)+37)
+	MerlinsRaidHelper.tableBG:SetDimensions(408,(20*var)+37)
 
 	for i = 1 , var do
-		merlinsGroupDPS.tableBG[i]:SetHidden(false)
+		MerlinsRaidHelper.tableBG[i]:SetHidden(false)
 	end
 	-- clean up table
 	for i = (var+1) , 12 do
-		merlinsGroupDPS.tableBG[i]:SetHidden(true)
+		MerlinsRaidHelper.tableBG[i]:SetHidden(true)
 	end
 
-	merlinsGroupDPS.tlw:SetHidden(false)
+	MerlinsRaidHelper.tlw:SetHidden(false)
 end
 
 local function SetTimer()
 	local secounds = 5 * 60
-	merlinsGroupDPS.timertime = secounds + (GetGameTimeMilliseconds() / 1000)
+	MerlinsRaidHelper.timertime = secounds + (GetGameTimeMilliseconds() / 1000)
 	-- d("Set Timer")
 
 end
 
-EVENT_MANAGER:RegisterForEvent(merlinsGroupDPS.name, EVENT_ADD_ON_LOADED, merlinsGroupDPS.OnAddOnLoaded);
+EVENT_MANAGER:RegisterForEvent(MerlinsRaidHelper.name, EVENT_ADD_ON_LOADED, MerlinsRaidHelper.OnAddOnLoaded);
 
 SLASH_COMMANDS["/test"] = ResizeWind
-SLASH_COMMANDS["/hide"] = merlinsGroupDPS.HideTable
+SLASH_COMMANDS["/hide"] = MerlinsRaidHelper.HideTable
 SLASH_COMMANDS["/settimer"] = SetTimer

@@ -1,10 +1,10 @@
 <GuiXml>
     <Controls>
-        <TopLevelControl name="merlinsGroupDPSFrameRoot" movable="false">
+        <TopLevelControl name="MerlinsRaidHelperFrameRoot" movable="false">
             <Dimensions x="58" y="58" />
             <Anchor point="CENTER" />
             <OnUpdate>
-                merlinsGroupDPS:UpdateTimer()
+                MerlinsRaidHelper:UpdateTimer()
             </OnUpdate>
         </TopLevelControl>
     </Controls>

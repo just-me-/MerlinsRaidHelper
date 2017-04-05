@@ -1,11 +1,11 @@
-## Title: |c00FF00Merlin's Group DPS|r
+## Title: |c9E00FFMerlin's Raid Helper|r
 ## APIVersion: 100018
-## Version: 1.0.0
+## Version: 1.0.1
 ## Author: @Just_Merlin
-## Description: Shares your DPS with your raidlead.
+## Description: Shares your DPS with your raid lead and provides some useful tools.
 
 lang/en.lua
 lang/$(language).lua
 
-MerlinsGroupDPS.lua
-MerlinsGroupDPS.xml
+MerlinsRaidHelper.lua
+MerlinsRaidHelper.xml
