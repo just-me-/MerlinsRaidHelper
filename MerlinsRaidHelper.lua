@@ -20,11 +20,15 @@ MerlinsRaidHelper.field = {}
 MerlinsRaidHelper.wm = nil
 MerlinsRaidHelper.tlw = nil
 MerlinsRaidHelper.tableBG = nil
+MerlinsRaidHelper.tablewidth = 415 -- const.
 
 -- timer
 MerlinsRaidHelper.tltw = nil
 MerlinsRaidHelper.timerlabel = nil
 MerlinsRaidHelper.timertime = 0
+
+-- rdy checker
+MerlinsRaidHelper.rdylist = {}
 
 
 -- Initialize addon
@@ -191,23 +195,25 @@ MerlinsRaidHelper.ChatCallback = function(_, messageType, from, message)
 
 		if from ~= nil and from ~= "" then
 
-    if string.lower(message) == "showdps" then
-			MerlinsRaidHelper:SendToChat()
-    end
+	    if string.lower(message) == "showdps" then
+				MerlinsRaidHelper:SendToChat()
+	    end
 
-		if string.lower(message) == "showinit" then
-			MerlinsRaidHelper:SendInitToChat()
-    end
+			if string.lower(message) == "showinit" then
+				MerlinsRaidHelper:SendInitToChat()
+	    end
 
-		if string.match(string.lower(message), "^settimer%s%d+") then
-			-- d("Match Timer: " .. message)
-			mins = string.match(string.lower(message), "(%d+)")
-			-- d(mins)
-			local secounds = mins * 60
-			MerlinsRaidHelper.timertime = secounds + (GetGameTimeMilliseconds() / 1000)
-    end
+			if string.lower(message) == "rdycheck" then
+				MerlinsRaidHelper:StartReadyCheck()
+	    end
 
-
+			if string.match(string.lower(message), "^settimer%s%d+") then
+				-- d("Match Timer: " .. message)
+				mins = string.match(string.lower(message), "(%d+)")
+				-- d(mins)
+				local secounds = mins * 60
+				MerlinsRaidHelper.timertime = secounds + (GetGameTimeMilliseconds() / 1000)
+	    end
 
 		end
 
@@ -269,6 +275,7 @@ end
 
 function MerlinsRaidHelper:SendInitToChat()
 
+	PlayEmoteByIndex(84)
 	CHAT_SYSTEM:SetChannel(3)
 	CHAT_SYSTEM:StartTextEntry("◯ M's Group DPS (V"..MerlinsRaidHelper.version..") is ready to use! ◯")
 
@@ -295,7 +302,7 @@ function MerlinsRaidHelper:SetupInterface()
 		MerlinsRaidHelper.wm = GetWindowManager()
 		MerlinsRaidHelper.tlw = MerlinsRaidHelper.wm:CreateTopLevelWindow("ccTLW")
 
-		MerlinsRaidHelper.tlw:SetDimensions(408,20*12+37)
+		MerlinsRaidHelper.tlw:SetDimensions(MerlinsRaidHelper.tablewidth,20*12+37)
 		MerlinsRaidHelper.tlw:SetResizeToFitDescendents(true)
 		MerlinsRaidHelper.tlw:SetAnchor(RIGHT, GuiRoot, RIGHT, -10, -100)
 
@@ -307,7 +314,7 @@ function MerlinsRaidHelper:SetupInterface()
 		MerlinsRaidHelper.tableBG:SetEdgeColor(0.4,0.4,0.4, 0.1)
 		MerlinsRaidHelper.tableBG:SetCenterColor(0.2,0.2,0.2,1)
 		MerlinsRaidHelper.tableBG:SetAnchor(TOPLEFT, MerlinsRaidHelper.tlw, TOPLEFT, 0, 0)
-		MerlinsRaidHelper.tableBG:SetDimensions(408,20*12+37)
+		MerlinsRaidHelper.tableBG:SetDimensions(MerlinsRaidHelper.tablewidth,20*12+37)
 		MerlinsRaidHelper.tableBG:SetAlpha(0.8)
 		MerlinsRaidHelper.tableBG:SetDrawLayer(0)
 		-- tableBG:SetHandler( "OnMouseUp", function( self ) FTC.Menu:SaveAnchor( self ) end )
@@ -349,6 +356,42 @@ function MerlinsRaidHelper:SetupInterface()
 
 		MerlinsRaidHelper.tltw:SetHidden(true)
 
+
+end
+
+function MerlinsRaidHelper:StartReadyCheck()
+	 if IsUnitGrouped('player') == false then return end
+
+	-- clean table; save position data
+	MerlinsRaidHelper.rdylist = {}
+	for xid = 1, GetGroupSize(), 1 do
+	  tag = GetGroupUnitTagByIndex(xid)
+		posX, posY, posZ = GetMapPlayerPosition(tag)
+		MerlinsRaidHelper.rdylist[tag] = posX..posY..posZ
+	end
+	--d(MerlinsRaidHelper.rdylist)
+
+	-- start timer
+	MerlinsRaidHelper.timertime = 10 + (GetGameTimeMilliseconds() / 1000)
+	-- callback - check table
+	zo_callLater(MerlinsRaidHelper.EndReadyCheck, 10000) -- 10s
+	d("rdy-Checker started...")
+
+	-- sit on chair
+	PlayEmoteByIndex(100)
+
+end
+
+function MerlinsRaidHelper:EndReadyCheck()
+	d("rdy-Checker done.")
+	for xid = 1, GetGroupSize(), 1 do
+		tag = GetGroupUnitTagByIndex(xid)
+		name = GetUnitName(tag)
+		posX, posY, posZ = GetMapPlayerPosition(tag)
+		if (MerlinsRaidHelper.rdylist[tag] == posX..posY..posZ) then
+			d(name.." is still not here!")
+		end
+	end
 
 end
 
@@ -403,7 +446,7 @@ function MerlinsRaidHelper:UIRow(id, height, left, top)
 		local tableBG = {}
 		MerlinsRaidHelper.tableBG[id] = MerlinsRaidHelper.wm:CreateControl("rowBackDrop"..id, MerlinsRaidHelper.tlw, CT_BACKDROP)
 		MerlinsRaidHelper.tableBG[id]:SetAnchor(TOPLEFT, MerlinsRaidHelper.tlw, TOPLEFT, left-5, top)
-		MerlinsRaidHelper.tableBG[id]:SetDimensions(390,height)
+		MerlinsRaidHelper.tableBG[id]:SetDimensions(390+7,height)
 		if (id%2 == 0) then
 			MerlinsRaidHelper.tableBG[id]:SetEdgeColor(0.1,0.1,0.1)
 			MerlinsRaidHelper.tableBG[id]:SetCenterColor(0.1,0.1,0.1)
@@ -413,13 +456,13 @@ function MerlinsRaidHelper:UIRow(id, height, left, top)
 		end
 
 		MerlinsRaidHelper:UILabel(id, "Player", 140, height, left, top)
-		MerlinsRaidHelper:UILabel(id, "Time", 75, height, left+140, top)
-		MerlinsRaidHelper:UILabel(id, "Damage", 100, height, left+140+75, top)
-		MerlinsRaidHelper:UILabel(id, "DPS", 75, height, left+140+75+100, top)
+		MerlinsRaidHelper:UILabel(id, "Time", 75, height, left+140, top, true)
+		MerlinsRaidHelper:UILabel(id, "Damage", 100, height, left+140+75, top, true)
+		MerlinsRaidHelper:UILabel(id, "DPS", 75, height, left+140+75+100, top, true)
 
 end
 
-function MerlinsRaidHelper:UILabel(id, text, width, height, left, top)
+function MerlinsRaidHelper:UILabel(id, text, width, height, left, top, align_right)
 
 	local tag = text
 	MerlinsRaidHelper.field[id..tag] = MerlinsRaidHelper.wm:CreateControl("label"..tag..id, MerlinsRaidHelper.tableBG[id], CT_LABEL)
@@ -431,6 +474,10 @@ function MerlinsRaidHelper:UILabel(id, text, width, height, left, top)
 	MerlinsRaidHelper.field[id..tag]:SetText(text)
 	MerlinsRaidHelper.field[id..tag]:SetAnchor(TOPLEFT, MerlinsRaidHelper.tlw, TOPLEFT, left, top)
 	MerlinsRaidHelper.field[id..tag]:SetDimensions(width,height)
+
+	if(align_right) then
+		MerlinsRaidHelper.field[id..tag]:SetHorizontalAlignment(TEXT_ALIGN_RIGHT)
+	end
 
 end
 
@@ -456,9 +503,9 @@ function MerlinsRaidHelper:UIReloadTable()
 		-- insert rows
 		for i = 1 , #data do
 			MerlinsRaidHelper.field[i.."Player"]:SetText(data[i].name)
-			MerlinsRaidHelper.field[i.."Damage"]:SetText(data[i].damage)
-			MerlinsRaidHelper.field[i.."DPS"]:SetText(data[i].dps)
-			MerlinsRaidHelper.field[i.."Time"]:SetText(data[i].time)
+			MerlinsRaidHelper.field[i.."Damage"]:SetText((FormatIntegerWithDigitGrouping(data[i].damage,"'")))
+			MerlinsRaidHelper.field[i.."DPS"]:SetText((FormatIntegerWithDigitGrouping(data[i].dps,"'")))
+			MerlinsRaidHelper.field[i.."Time"]:SetText(data[i].time.."s")
 			MerlinsRaidHelper.tableBG[i]:SetHidden(false)
 		end
 		-- clean up table
@@ -468,8 +515,8 @@ function MerlinsRaidHelper:UIReloadTable()
 
 		-- resize
 		-- d((25*#data)-5)
-		MerlinsRaidHelper.tlw:SetDimensions(408,(20*#data)+37)
-		MerlinsRaidHelper.tableBG:SetDimensions(408,(20*#data)+37)
+		MerlinsRaidHelper.tlw:SetDimensions(MerlinsRaidHelper.tablewidth,(20*#data)+37)
+		MerlinsRaidHelper.tableBG:SetDimensions(MerlinsRaidHelper.tablewidth,(20*#data)+37)
 
 		-- fade out
 		--MerlinsRaidHelper.tlw:SetHidden(true)
@@ -483,9 +530,13 @@ function MerlinsRaidHelper.HideTable()
 	MerlinsRaidHelper.tlw:SetHidden(true)
 end
 
+local function ShowTable()
+	MerlinsRaidHelper.tlw:SetHidden(false)
+end
+
 local function ResizeWind(var)
-	MerlinsRaidHelper.tlw:SetDimensions(408,(20*var)+37)
-	MerlinsRaidHelper.tableBG:SetDimensions(408,(20*var)+37)
+	MerlinsRaidHelper.tlw:SetDimensions(MerlinsRaidHelper.tablewidth,(20*var)+37)
+	MerlinsRaidHelper.tableBG:SetDimensions(MerlinsRaidHelper.tablewidth,(20*var)+37)
 
 	for i = 1 , var do
 		MerlinsRaidHelper.tableBG[i]:SetHidden(false)
@@ -508,5 +559,7 @@ end
 EVENT_MANAGER:RegisterForEvent(MerlinsRaidHelper.name, EVENT_ADD_ON_LOADED, MerlinsRaidHelper.OnAddOnLoaded);
 
 SLASH_COMMANDS["/test"] = ResizeWind
+SLASH_COMMANDS["/show"] = ShowTable
 SLASH_COMMANDS["/hide"] = MerlinsRaidHelper.HideTable
+SLASH_COMMANDS["/rdycheck"] = MerlinsRaidHelper.StartReadyCheck
 SLASH_COMMANDS["/settimer"] = SetTimer
