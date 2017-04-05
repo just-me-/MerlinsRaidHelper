@@ -1,0 +1,11 @@
+## Title: |c00FF00Merlin's Group DPS|r
+## APIVersion: 100018
+## Version: 1.0.0
+## Author: @Just_Merlin
+## Description: Shares your DPS with your raidlead.
+
+lang/en.lua
+lang/$(language).lua
+
+MerlinsGroupDPS.lua
+MerlinsGroupDPS.xml
