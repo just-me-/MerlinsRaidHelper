@@ -1,46 +1,41 @@
-Merlins Heal Helper [EN]
+Merlins Raid Helper [EN]
 ==================
 
-This addon will help you to heal group members. If there life drops under a specified percent an alert will shown up. 
-
-This addon is a fork of the ["HyperToxic's Healer Helper"](http://www.esoui.com/downloads/info887-HyperToxicsHealerHelper.html)
+This addon will share your DPS with your raid lead and provides some useful tools.
 
 If you have any problems or wishes you can write me an IG Messange (@Just_Merlin) or leave me a comment on the download page. 
 
 What does it
 --------
 
-**A Heal Helper**
+**A Raid Helper**
 
- * Shows if a group member needs heal and alerts name 
- * If someone is out of range and needs heal, this will also be shown (in a diffrent way)
+ * Shares your DPS with your raid lead or group
+ * Break Timer
+ * rdy-Checker with names
+ * ...
 
 **Settings**
 
- * Option to replace the alert area
- * Define the percentage value at which you want to be notified
+ * comming soon
 
 
-Merlins Heal Helper [DE]
+Merlins Raid Helper [DE]
 ==================
 
-Dieses Addon wird dir helfen, Gruppenmitglieder zu heilen. 
-Wenn das Leben eines Gruppenmitglieds unter einen definierten Prozentwert 
-sinkt, wird dir dies eine Benachrichtigung anzeigen. 
-
-Dieses Addon ist ein Fork von ["HyperToxic's Healer Helper"](http://www.esoui.com/downloads/info887-HyperToxicsHealerHelper.html)
+Dieses Addon wird deinen DPS mit deiner Raidleitung oder der gesamten Gruppe teilen und liefert ein paar weitere, nützliche Kleinigkeiten. 
 
 Falls du auf ein Problem stossen solltest, oder Wünsche zur Verbesserung hast, kannst du dich gerne an mich per IG Nachricht (@Just_Merlin) bei mir melden, oder hier auf der Downloadseite einen Kommentar hinterlassen. 
 
 Funktionen
 --------
 
-**Eine Heilungs-Hilfe**
+**Eine Raidleitungs-Hilfe**
 
- * Warnt, wenn ein Gruppenmitglied Heilung benötigt 
- * Falls jemand ausser Reichweite ist und Heilung benötigt, wird ebenfalls eine (andere) Nachricht angezeigt
+ * Teilt deine Schadenswerte mit deiner Gruppe oder nur mit deiner Raidleitung
+ * Pausen-Timer
+ * rdy-Checker ink. Namensanzeige 
  
 **Einstellungen**
 
- * Option um den Benachrichtigungsbereich zu verschieben 
- * Definiere den Prozentwert, bei welchem du benachrichtigt werden möchtest 
+ * folgen später 
