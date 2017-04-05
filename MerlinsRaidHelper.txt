@@ -8,4 +8,7 @@ lang/en.lua
 lang/$(language).lua
 
 MerlinsRaidHelper.lua
+MerlinsRaidHelper_dmg.lua
+MerlinsRaidHelper_ui.lua
+MerlinsRaidHelper_settings.lua
 MerlinsRaidHelper.xml
