@@ -474,11 +474,12 @@ function merlinsGroupDPS:UIReloadTable()
 		-- fade out
 		--merlinsGroupDPS.tlw:SetHidden(true)
 
-		zo_callLater(hideTable, 12000) --12 s
+		zo_callLater(merlinsGroupDPS.HideTable, 12000) --12 s
 
 end
 
-local function HideTable()
+-- not local cuz teso callback function 
+function merlinsGroupDPS.HideTable()
 	merlinsGroupDPS.tlw:SetHidden(true)
 end
 
@@ -507,5 +508,5 @@ end
 EVENT_MANAGER:RegisterForEvent(merlinsGroupDPS.name, EVENT_ADD_ON_LOADED, merlinsGroupDPS.OnAddOnLoaded);
 
 SLASH_COMMANDS["/test"] = ResizeWind
-SLASH_COMMANDS["/hide"] = HideTable
+SLASH_COMMANDS["/hide"] = merlinsGroupDPS.HideTable
 SLASH_COMMANDS["/settimer"] = SetTimer
