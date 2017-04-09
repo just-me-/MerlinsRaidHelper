@@ -110,12 +110,12 @@ function MerlinsRaidHelper:UIReloadTable()
 		for player , damage in pairs(MerlinsRaidHelper.groupDPSdatas) do
 			table.insert(data,damage)
 		end
-		table.sort(data, compare)
+		table.sort(data, MerlinsRaidHelper.compare)
 		 --d(data)
 
 		-- visibility
-		if ( #data == 0 ) then MerlinsRaidHelper.tlw:SetHidden(true) end
 		MerlinsRaidHelper.tlw:SetHidden(false)
+		if ( #data == 0 ) then MerlinsRaidHelper.tlw:SetHidden(true) end
 
 		-- insert rows
 		for i = 1 , #data do
@@ -143,6 +143,6 @@ function MerlinsRaidHelper:UIReloadTable()
 end
 
 -- used by UIReloadTable
-local function compare(x,y)
+function MerlinsRaidHelper.compare(x,y)
 	return x.damage > y.damage
 end

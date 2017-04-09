@@ -59,7 +59,6 @@ end
 
 function MerlinsRaidHelper.OnPlayerCombatState(event, inCombat)
 	-- The ~= operator is "not equal to" in Lua.
-
 	if inCombat ~= MerlinsRaidHelper.inCombat then
 		-- MerlinsRaidHelper.inCombat = inCombat
 		if inCombat then
@@ -97,6 +96,7 @@ function MerlinsRaidHelper.OnPing( eventCode, pingEventType, pingType, pingTag, 
 
 
 		local now = GetGameTimeMilliseconds()
+    --d("last GD: "..MerlinsRaidHelper.lastGroupDatas .. " and "..(MerlinsRaidHelper.lastGroupDatas-now)/1000)
 		if ((MerlinsRaidHelper.lastGroupDatas == 0) or ((MerlinsRaidHelper.lastGroupDatas-now)/1000 > 5)) then
 			-- new table
 			MerlinsRaidHelper.lastGroupDatas = now
@@ -139,6 +139,6 @@ function MerlinsRaidHelper:SendPing()
 	-- Send the ping
 	PingMap( MAP_PIN_TYPE_PING , MAP_TYPE_LOCATION_CENTERED , timeCoord , dpsCoord )
 
-	 -- d("Ping Posted - "..dps)
+	 --d("Ping Posted - "..dps)
 
 end
