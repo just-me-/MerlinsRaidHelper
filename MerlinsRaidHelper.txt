@@ -1,8 +1,26 @@
 ## Title: |c9E00FFMerlin's Raid Helper|r
 ## APIVersion: 100018
-## Version: 1.0.1
+## SavedVariables: MerlinsRaidHelperSavedVariables
+## Version: 1.0.3
 ## Author: @Just_Merlin
 ## Description: Shares your DPS with your raid lead and provides some useful tools.
+## OptionalDependsOn: LibAddonMenu-2.0
+
+lib\LibStub\LibStub.lua
+
+lib\LibAddonMenu-2.0\LibAddonMenu-2.0.lua
+lib\LibAddonMenu-2.0\controls\panel.lua
+lib\LibAddonMenu-2.0\controls\submenu.lua
+lib\LibAddonMenu-2.0\controls\button.lua
+lib\LibAddonMenu-2.0\controls\checkbox.lua
+lib\LibAddonMenu-2.0\controls\colorpicker.lua
+lib\LibAddonMenu-2.0\controls\custom.lua
+lib\LibAddonMenu-2.0\controls\description.lua
+lib\LibAddonMenu-2.0\controls\dropdown.lua
+lib\LibAddonMenu-2.0\controls\editbox.lua
+lib\LibAddonMenu-2.0\controls\header.lua
+lib\LibAddonMenu-2.0\controls\slider.lua
+lib\LibAddonMenu-2.0\controls\texture.lua
 
 lang/en.lua
 lang/$(language).lua

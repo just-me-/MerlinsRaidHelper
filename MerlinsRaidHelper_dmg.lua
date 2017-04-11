@@ -96,8 +96,8 @@ function MerlinsRaidHelper.OnPing( eventCode, pingEventType, pingType, pingTag, 
 
 
 		local now = GetGameTimeMilliseconds()
-    --d("last GD: "..MerlinsRaidHelper.lastGroupDatas .. " and "..(MerlinsRaidHelper.lastGroupDatas-now)/1000)
-		if ((MerlinsRaidHelper.lastGroupDatas == 0) or ((MerlinsRaidHelper.lastGroupDatas-now)/1000 > 5)) then
+    --d("last GD: "..MerlinsRaidHelper.lastGroupDatas .. " and "..(now-MerlinsRaidHelper.lastGroupDatas)/1000)
+		if ((MerlinsRaidHelper.lastGroupDatas == 0) or ((now-MerlinsRaidHelper.lastGroupDatas)/1000 > 5)) then
 			-- new table
 			MerlinsRaidHelper.lastGroupDatas = now
 			MerlinsRaidHelper.groupDPSdatas = {}

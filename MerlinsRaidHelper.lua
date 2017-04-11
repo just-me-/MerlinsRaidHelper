@@ -1,7 +1,9 @@
 MerlinsRaidHelper = {}
 
+MerlinsRaidHelper.LAM2 = LibStub("LibAddonMenu-2.0")
+
 MerlinsRaidHelper.name = "MerlinsRaidHelper"
-MerlinsRaidHelper.version = "1.0.2"
+MerlinsRaidHelper.version = "1.0.3"
 MerlinsRaidHelper.inCombat = false
 
 MerlinsRaidHelper.timestart = 0
@@ -38,16 +40,28 @@ MerlinsRaidHelper.rdylist = {}
 function MerlinsRaidHelper.OnAddOnLoaded(eventCode, addOnName)
 	if (addOnName == MerlinsRaidHelper.name) then
 		MerlinsRaidHelper:Initialize()
+		MerlinsRaidHelper:CreateSettingsMenu()
 	end
 end
 
 
 local function OnPluginLoaded(event, addon)
 
+	-- 2do..
+	-- IsUnitInCombat(string unitTag)
+	--		Returns: boolean isInCombat
+
 end
 
 
 function MerlinsRaidHelper:Initialize()
+	-- saved varis
+	local defaults = {
+		userOPACITY = 100,
+		userSHOWTABLE = false,
+	}
+	self.savedVariables = ZO_SavedVars:NewAccountWide("MerlinsRaidHelperSavedVariables", 1, nil, defaults)
+
 	self.inCombat = IsUnitInCombat("player")
 
 	MerlinsRaidHelper:SetupInterface()
@@ -270,11 +284,11 @@ end
 -- #############################
 
 -- not local cuz teso callback function
-function MerlinsRaidHelper.HideTable()
+function MerlinsRaidHelper:HideTable()
 	MerlinsRaidHelper.tlw:SetHidden(true)
 end
 
-local function ShowTable()
+function MerlinsRaidHelper:ShowTable()
 	MerlinsRaidHelper.tlw:SetHidden(false)
 end
 
@@ -290,7 +304,7 @@ local function ResizeWind(var)
 		MerlinsRaidHelper.tableBG[i]:SetHidden(true)
 	end
 
-	MerlinsRaidHelper.tlw:SetHidden(false)
+	MerlinsRaidHelper:ShowTable()
 end
 
 local function SetTimer()
@@ -308,7 +322,7 @@ EVENT_MANAGER:RegisterForEvent(MerlinsRaidHelper.name, EVENT_ADD_ON_LOADED, Merl
 -- #############################
 
 SLASH_COMMANDS["/test"] = ResizeWind
-SLASH_COMMANDS["/show"] = ShowTable
+SLASH_COMMANDS["/show"] = MerlinsRaidHelper.ShowTable
 SLASH_COMMANDS["/hide"] = MerlinsRaidHelper.HideTable
 SLASH_COMMANDS["/rdycheck"] = MerlinsRaidHelper.StartReadyCheck
 SLASH_COMMANDS["/settimer"] = SetTimer
