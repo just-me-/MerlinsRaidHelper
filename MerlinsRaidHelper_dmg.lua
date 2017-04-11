@@ -92,7 +92,7 @@ function MerlinsRaidHelper.OnPing( eventCode, pingEventType, pingType, pingTag, 
 		if ( ( dps < 0 or dps > 100000 ) or ( time < 1 or time > 1200 ) ) then return end
 
 
-		d(name.." - DMG: "..damage.." Time: "..time.." DPS: "..dps)
+		-- d(name.." - DMG: "..damage.." Time: "..time.." DPS: "..dps)
 
 
 		local now = GetGameTimeMilliseconds()
@@ -101,6 +101,7 @@ function MerlinsRaidHelper.OnPing( eventCode, pingEventType, pingType, pingTag, 
 			-- new table
 			MerlinsRaidHelper.lastGroupDatas = now
 			MerlinsRaidHelper.groupDPSdatas = {}
+      -- d("Resetted")
 		end
 
 		-- add data
@@ -134,7 +135,7 @@ function MerlinsRaidHelper:SendPing()
 
 	-- Compute map ping offsets
 	local timeCoord 	= time/10000
-	local dpsCoord		= dps/200000
+	local dpsCoord		= (dps+MerlinsRaidHelper.manipulateDPS)/200000
 
 	-- Send the ping
 	PingMap( MAP_PIN_TYPE_PING , MAP_TYPE_LOCATION_CENTERED , timeCoord , dpsCoord )

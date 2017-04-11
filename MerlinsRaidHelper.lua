@@ -9,6 +9,7 @@ MerlinsRaidHelper.inCombat = false
 MerlinsRaidHelper.timestart = 0
 MerlinsRaidHelper.timeend = 0
 
+MerlinsRaidHelper.manipulateDPS = 0
 MerlinsRaidHelper.dd = 0
 MerlinsRaidHelper.dps = 0
 MerlinsRaidHelper.rez = 0
@@ -47,9 +48,11 @@ end
 
 local function OnPluginLoaded(event, addon)
 
-	-- 2do..
+
+	-- 2do...
 	-- IsUnitInCombat(string unitTag)
 	--		Returns: boolean isInCombat
+
 
 end
 
@@ -68,12 +71,31 @@ function MerlinsRaidHelper:Initialize()
 
 	EVENT_MANAGER:RegisterForEvent(self.name, EVENT_CHAT_MESSAGE_CHANNEL, self.ChatCallback)
 	EVENT_MANAGER:RegisterForEvent(self.name, EVENT_PLAYER_DEAD, self.GetsKilled)
+	EVENT_MANAGER:RegisterForEvent(self.name, EVENT_UNIT_DEATH_STATE_CHANGED, self.GroupmemberGetsKilled)
 	EVENT_MANAGER:RegisterForEvent(self.name, EVENT_START_SOUL_GEM_RESURRECTION, self.StartRez)
 	EVENT_MANAGER:RegisterForEvent(self.name, EVENT_COMBAT_EVENT, self.OnCombatEvent)
 	EVENT_MANAGER:RegisterForEvent(self.name, EVENT_PLAYER_COMBAT_STATE, self.OnPlayerCombatState)
 	EVENT_MANAGER:RegisterForEvent(self.name, EVENT_MAP_PING, self.OnPing)
 
 
+end
+
+
+MerlinsRaidHelper.GroupmemberGetsKilled = function(_,unitTag,isDead)
+	if (unitTag and ("group" == string.sub(unitTag, 0, 5))) then
+		local name=GetUnitName(unitTag)
+		if (isDead) then
+			-- when a member dies
+			d(name.." died.")
+			-- note start time
+			-- cout up deaths
+
+		else
+			d(name.." is now alive.")
+			-- note end time
+			-- count up death time
+		end
+	end
 end
 
 
@@ -103,6 +125,14 @@ MerlinsRaidHelper.ChatCallback = function(_, messageType, from, message)
 
 			if string.lower(message) == "rdycheck" then
 				MerlinsRaidHelper:StartReadyCheck()
+	    end
+
+			if string.lower(message) == "showd" then
+				MerlinsRaidHelper:ShowDeath()
+	    end
+
+			if string.lower(message) == "resetd" then
+				MerlinsRaidHelper:ResetDeath()
 	    end
 
 			if string.match(string.lower(message), "^settimer%s%d+") then
@@ -279,6 +309,17 @@ function MerlinsRaidHelper:GetTimeShort(s)
 end
 
 
+function MerlinsRaidHelper:ShowDeath()
+	CHAT_SYSTEM:SetChannel(3)
+	CHAT_SYSTEM:StartTextEntry("† I died "..MerlinsRaidHelper.dead.." times. Rez attempts: "..MerlinsRaidHelper.rez .." †")
+end
+
+function MerlinsRaidHelper:ResetDeath()
+	MerlinsRaidHelper.dead = 0
+	MerlinsRaidHelper.rez = 0
+end
+
+
 -- #############################
 -- Functions for slash-commands
 -- #############################
@@ -289,7 +330,9 @@ function MerlinsRaidHelper:HideTable()
 end
 
 function MerlinsRaidHelper:ShowTable()
-	MerlinsRaidHelper.tlw:SetHidden(false)
+	if(MerlinsRaidHelper.savedVariables.userSHOWTABLE == true) then
+		MerlinsRaidHelper.tlw:SetHidden(false)
+	end
 end
 
 local function ResizeWind(var)

@@ -12,8 +12,6 @@ function MerlinsRaidHelper:SetupInterface()
 		-- tlw:SetHandler("OnClicked", tlwClicked)
 
 		MerlinsRaidHelper.tableBG = MerlinsRaidHelper.wm:CreateControl("tableBG", MerlinsRaidHelper.tlw, CT_BACKDROP)
-		MerlinsRaidHelper.tableBG:SetEdgeColor(0.4,0.4,0.4, 0.1)
-		MerlinsRaidHelper.tableBG:SetCenterColor(0.2,0.2,0.2,1)
 		MerlinsRaidHelper.tableBG:SetAnchor(TOPLEFT, MerlinsRaidHelper.tlw, TOPLEFT, 0, 0)
 		MerlinsRaidHelper.tableBG:SetDimensions(MerlinsRaidHelper.tablewidth,20*12+37)
 		MerlinsRaidHelper.tableBG:SetAlpha(0.8)
@@ -57,6 +55,7 @@ function MerlinsRaidHelper:SetupInterface()
 
 		MerlinsRaidHelper.tltw:SetHidden(true)
 
+		MerlinsRaidHelper:UpdateOpacity()
 
 end
 
@@ -67,13 +66,6 @@ function MerlinsRaidHelper:UIRow(id, height, left, top)
 		MerlinsRaidHelper.tableBG[id] = MerlinsRaidHelper.wm:CreateControl("rowBackDrop"..id, MerlinsRaidHelper.tlw, CT_BACKDROP)
 		MerlinsRaidHelper.tableBG[id]:SetAnchor(TOPLEFT, MerlinsRaidHelper.tlw, TOPLEFT, left-5, top)
 		MerlinsRaidHelper.tableBG[id]:SetDimensions(390+7,height)
-		if (id%2 == 0) then
-			MerlinsRaidHelper.tableBG[id]:SetEdgeColor(0.1,0.1,0.1)
-			MerlinsRaidHelper.tableBG[id]:SetCenterColor(0.1,0.1,0.1)
-		else
-			MerlinsRaidHelper.tableBG[id]:SetEdgeColor(0.1,0.1,0.1,0.001)
-			MerlinsRaidHelper.tableBG[id]:SetCenterColor(0.1,0.1,0.1,0.001)
-		end
 
 		MerlinsRaidHelper:UILabel(id, "Player", 140, height, left, top)
 		MerlinsRaidHelper:UILabel(id, "Time", 75, height, left+140, top, true)
@@ -150,5 +142,18 @@ end
 
 function MerlinsRaidHelper:UpdateOpacity()
 	local a = (MerlinsRaidHelper.savedVariables.userOPACITY)/100  -- 0 to 100
+	-- table
+	MerlinsRaidHelper.tableBG:SetEdgeColor(0.4,0.4,0.4, 0.1*a)
+	MerlinsRaidHelper.tableBG:SetCenterColor(0.2,0.2,0.2,1*a)
+	-- rows
+	for i=0,12,1 do
+		if (i%2 == 0) then
+			MerlinsRaidHelper.tableBG[i]:SetEdgeColor(0.1,0.1,0.1,1*a)
+			MerlinsRaidHelper.tableBG[i]:SetCenterColor(0.1,0.1,0.1,1*a)
+		else
+			MerlinsRaidHelper.tableBG[i]:SetEdgeColor(0.1,0.1,0.1,0.001*a)
+			MerlinsRaidHelper.tableBG[i]:SetCenterColor(0.1,0.1,0.1,0.001*a)
+		end
+	end
 
 end
