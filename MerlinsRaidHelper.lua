@@ -3,7 +3,7 @@ MerlinsRaidHelper = {}
 MerlinsRaidHelper.LAM2 = LibStub("LibAddonMenu-2.0")
 
 MerlinsRaidHelper.name = "MerlinsRaidHelper"
-MerlinsRaidHelper.version = "1.0.3"
+MerlinsRaidHelper.version = "1.0.4"
 MerlinsRaidHelper.inCombat = false
 
 MerlinsRaidHelper.timestart = 0
